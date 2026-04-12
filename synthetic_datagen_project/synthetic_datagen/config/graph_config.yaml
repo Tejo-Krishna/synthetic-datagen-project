@@ -1,0 +1,107 @@
+# config/graph_config.yaml
+# Owned by: graph/heterogeneous_graph.py and graph/projected_graph.py
+#
+# Controls edge weights and semantic concept groupings used during
+# heterogeneous graph construction and projected edge derivation.
+
+edge_weights:
+  data_link: 1.0    # response field directly fills a required parameter
+  semantic: 0.45    # shared semantic concept between endpoints
+  category: 0.2     # same functional domain/category, weakest link
+
+# Semantic groups define Concept/Tag nodes in the heterogeneous graph.
+# Each group name becomes a concept node.
+# Keywords are matched against endpoint names, parameter names, and response field names.
+# An endpoint/parameter/response-field token matching a group's keywords
+# gets connected to that concept node.
+
+semantic_groups:
+  location:
+    - location
+    - city
+    - destination
+    - place
+    - address
+    - origin
+    - source
+    - region
+    - country
+    - area
+
+  time:
+    - date
+    - time
+    - schedule
+    - appointment
+    - datetime
+    - departure
+    - arrival
+    - deadline
+    - period
+    - duration
+
+  person:
+    - person
+    - user
+    - customer
+    - client
+    - guest
+    - passenger
+    - name
+    - profile
+    - account
+
+  item:
+    - item
+    - product
+    - sku
+    - goods
+    - service
+    - listing
+    - offering
+    - package
+
+  identifier:
+    - id
+    - identifier
+    - handle
+    - key
+    - ref
+    - code
+    - token
+    - number
+    - booking_id
+    - reservation_id
+    - flight_id
+    - hotel_id
+    - order_id
+    - product_id
+    - event_id
+
+  query:
+    - query
+    - keyword
+    - search_term
+    - term
+    - phrase
+    - text
+    - input
+
+  financial:
+    - price
+    - cost
+    - amount
+    - budget
+    - rate
+    - fee
+    - total
+    - currency
+    - payment
+
+  contact:
+    - email
+    - phone
+    - message
+    - notification
+    - alert
+    - contact

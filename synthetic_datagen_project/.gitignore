@@ -1,0 +1,9 @@
+.env
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+output/
+artifacts/
+*.egg-info/
+.venv/

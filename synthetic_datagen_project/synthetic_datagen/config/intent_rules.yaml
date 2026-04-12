@@ -1,0 +1,39 @@
+# config/intent_rules.yaml
+# Owned by: graph/registry.py
+#
+# Keyword-to-intent inference rules used during endpoint normalization.
+# Rules are sorted by priority at load time — never trust YAML list order.
+# First matching rule wins. Falls back to "unknown" if no rule matches.
+
+intent_rules:
+  - intent: search
+    priority: 100
+    keywords: [search, find, query, list, lookup, browse, discover, explore]
+
+  - intent: retrieve
+    priority: 90
+    keywords: [get, fetch, retrieve, details, info, show, read, load, view]
+
+  - intent: create
+    priority: 80
+    keywords: [book, create, make, add, schedule, post, submit, register, reserve, order, buy, purchase]
+
+  - intent: update
+    priority: 75
+    keywords: [update, edit, modify, change, patch, set, put]
+
+  - intent: delete
+    priority: 72
+    keywords: [delete, remove, cancel, unsubscribe, clear]
+
+  - intent: execute
+    priority: 70
+    keywords: [convert, translate, calculate, compute, run, process, generate, send, check]
+
+  - intent: compare
+    priority: 60
+    keywords: [compare, rank, sort, filter, select, choose, recommend, suggest]
+
+  - intent: summarize
+    priority: 50
+    keywords: [summarize, aggregate, report, analyze, review, describe]

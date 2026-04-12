@@ -1,0 +1,656 @@
+[
+  {
+    "tool_name": "flight_search",
+    "tool_description": "Search and retrieve flight information, availability, and pricing",
+    "category": "Travel",
+    "api_list": [
+      {
+        "name": "search_flights",
+        "description": "Search for available flights between two destinations on a given date",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "origin", "type": "string", "description": "IATA airport code for departure city"},
+          {"name": "destination", "type": "string", "description": "IATA airport code for arrival city"},
+          {"name": "departure_date", "type": "string", "description": "Departure date in YYYY-MM-DD format"}
+        ],
+        "optional_parameters": [
+          {"name": "passengers", "type": "integer", "description": "Number of passengers", "default": 1},
+          {"name": "cabin_class", "type": "string", "description": "Economy, business, or first class", "default": "economy"},
+          {"name": "return_date", "type": "string", "description": "Return date for round trips"}
+        ],
+        "template_response": "{\"flights\": [{\"flight_id\": \"AA123\", \"airline\": \"American Airlines\", \"price\": 350.00, \"duration\": \"5h30m\", \"stops\": 0, \"departure_time\": \"08:00\", \"arrival_time\": \"13:30\"}]}"
+      },
+      {
+        "name": "get_flight_details",
+        "description": "Get detailed information for a specific flight including seat availability and amenities",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "flight_id", "type": "string", "description": "Unique flight identifier from search results"}
+        ],
+        "optional_parameters": [],
+        "template_response": "{\"flight_id\": \"AA123\", \"seats_available\": 14, \"amenities\": [\"wifi\", \"meals\", \"entertainment\"], \"on_time_rate\": 0.87, \"aircraft\": \"Boeing 737\"}"
+      },
+      {
+        "name": "book_flight",
+        "description": "Book a flight for one or more passengers",
+        "method": "POST",
+        "required_parameters": [
+          {"name": "flight_id", "type": "string", "description": "Flight identifier to book"},
+          {"name": "passenger_name", "type": "string", "description": "Full name of primary passenger"},
+          {"name": "passenger_email", "type": "string", "description": "Contact email address"}
+        ],
+        "optional_parameters": [
+          {"name": "seat_preference", "type": "string", "description": "Window, aisle, or middle"},
+          {"name": "special_requests", "type": "string", "description": "Dietary or accessibility requests"}
+        ],
+        "template_response": "{\"booking_id\": \"BK001\", \"confirmation_code\": \"CONF789\", \"status\": \"confirmed\", \"total_price\": 350.00}"
+      }
+    ]
+  },
+  {
+    "tool_name": "hotel_booking",
+    "tool_description": "Search hotels, check availability, and make reservations",
+    "category": "Travel",
+    "api_list": [
+      {
+        "name": "search_hotels",
+        "description": "Search for available hotels in a city for given dates",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "city", "type": "string", "description": "City name for hotel search"},
+          {"name": "check_in", "type": "string", "description": "Check-in date YYYY-MM-DD"},
+          {"name": "check_out", "type": "string", "description": "Check-out date YYYY-MM-DD"}
+        ],
+        "optional_parameters": [
+          {"name": "guests", "type": "integer", "description": "Number of guests", "default": 1},
+          {"name": "min_stars", "type": "integer", "description": "Minimum star rating 1-5"},
+          {"name": "max_price", "type": "number", "description": "Maximum price per night in USD"}
+        ],
+        "template_response": "{\"hotels\": [{\"hotel_id\": \"H001\", \"name\": \"Grand Plaza Hotel\", \"stars\": 4, \"price_per_night\": 150.00, \"rating\": 4.5, \"distance_to_center\": \"0.5km\"}]}"
+      },
+      {
+        "name": "get_hotel_details",
+        "description": "Get full details for a specific hotel including amenities and room types",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "hotel_id", "type": "string", "description": "Hotel identifier from search results"}
+        ],
+        "optional_parameters": [],
+        "template_response": "{\"hotel_id\": \"H001\", \"name\": \"Grand Plaza Hotel\", \"amenities\": [\"pool\", \"gym\", \"restaurant\", \"spa\"], \"room_types\": [{\"type\": \"standard\", \"price\": 150.00}, {\"type\": \"suite\", \"price\": 280.00}]}"
+      },
+      {
+        "name": "book_hotel",
+        "description": "Make a hotel reservation",
+        "method": "POST",
+        "required_parameters": [
+          {"name": "hotel_id", "type": "string", "description": "Hotel identifier to book"},
+          {"name": "check_in", "type": "string", "description": "Check-in date YYYY-MM-DD"},
+          {"name": "check_out", "type": "string", "description": "Check-out date YYYY-MM-DD"},
+          {"name": "guest_name", "type": "string", "description": "Full name of primary guest"}
+        ],
+        "optional_parameters": [
+          {"name": "room_type", "type": "string", "description": "Room type preference"},
+          {"name": "special_requests", "type": "string", "description": "Special accommodation requests"}
+        ],
+        "template_response": "{\"reservation_id\": \"RES001\", \"confirmation\": \"HTL456\", \"total_price\": 450.00, \"status\": \"confirmed\"}"
+      }
+    ]
+  },
+  {
+    "tool_name": "weather_api",
+    "tool_description": "Real-time weather conditions and multi-day forecasts for any location",
+    "category": "Weather",
+    "api_list": [
+      {
+        "name": "get_current_weather",
+        "description": "Get current weather conditions for a city or coordinates",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "location", "type": "string", "description": "City name or lat,lon coordinates"}
+        ],
+        "optional_parameters": [
+          {"name": "units", "type": "string", "description": "metric or imperial", "default": "metric"}
+        ],
+        "template_response": "{\"location\": \"Paris\", \"temp\": 22, \"humidity\": 65, \"description\": \"partly cloudy\", \"wind_speed\": 12, \"feels_like\": 21}"
+      },
+      {
+        "name": "get_forecast",
+        "description": "Get multi-day weather forecast for a location",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "location", "type": "string", "description": "City name for forecast"}
+        ],
+        "optional_parameters": [
+          {"name": "days", "type": "integer", "description": "Number of forecast days 1-10", "default": 7},
+          {"name": "units", "type": "string", "description": "metric or imperial", "default": "metric"}
+        ],
+        "template_response": "{\"location\": \"Paris\", \"forecast\": [{\"date\": \"2024-06-01\", \"high\": 25, \"low\": 16, \"condition\": \"sunny\", \"precipitation_chance\": 10}]}"
+      }
+    ]
+  },
+  {
+    "tool_name": "maps_geocoding",
+    "tool_description": "Geocoding, reverse geocoding, directions, and nearby place search",
+    "category": "Maps",
+    "api_list": [
+      {
+        "name": "geocode_address",
+        "description": "Convert a street address to geographic coordinates",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "address", "type": "string", "description": "Full street address to geocode"}
+        ],
+        "optional_parameters": [],
+        "template_response": "{\"lat\": 48.8566, \"lon\": 2.3522, \"formatted_address\": \"Paris, France\", \"place_id\": \"ChIJD7fiBh9u5kcRYJSMaMOCCwQ\"}"
+      },
+      {
+        "name": "get_directions",
+        "description": "Get turn-by-turn directions between two locations",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "origin", "type": "string", "description": "Starting location address or coordinates"},
+          {"name": "destination", "type": "string", "description": "Ending location address or coordinates"}
+        ],
+        "optional_parameters": [
+          {"name": "mode", "type": "string", "description": "driving, walking, transit, or bicycling", "default": "driving"}
+        ],
+        "template_response": "{\"distance\": \"14.2 km\", \"duration\": \"28 min\", \"steps\": [{\"instruction\": \"Head north on Rue de Rivoli\", \"distance\": \"1.2 km\"}]}"
+      },
+      {
+        "name": "search_nearby_places",
+        "description": "Search for places of a specific type near a location",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "location", "type": "string", "description": "Center location for search"},
+          {"name": "type", "type": "string", "description": "Place type: restaurant, hotel, hospital, airport, etc."}
+        ],
+        "optional_parameters": [
+          {"name": "radius", "type": "integer", "description": "Search radius in meters", "default": 1000},
+          {"name": "min_rating", "type": "number", "description": "Minimum place rating 1-5"}
+        ],
+        "template_response": "{\"places\": [{\"place_id\": \"P001\", \"name\": \"Le Bistro\", \"rating\": 4.3, \"distance\": \"320m\", \"address\": \"12 Rue de la Paix\", \"open_now\": true}]}"
+      }
+    ]
+  },
+  {
+    "tool_name": "currency_exchange",
+    "tool_description": "Real-time currency exchange rates and conversion calculations",
+    "category": "Finance",
+    "api_list": [
+      {
+        "name": "get_exchange_rate",
+        "description": "Get the current exchange rate between two currencies",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "from_currency", "type": "string", "description": "Source currency ISO code e.g. USD"},
+          {"name": "to_currency", "type": "string", "description": "Target currency ISO code e.g. EUR"}
+        ],
+        "optional_parameters": [],
+        "template_response": "{\"from\": \"USD\", \"to\": \"EUR\", \"rate\": 0.92, \"timestamp\": \"2024-06-01T12:00:00Z\"}"
+      },
+      {
+        "name": "convert_currency",
+        "description": "Convert a specific amount from one currency to another",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "amount", "type": "number", "description": "Amount to convert"},
+          {"name": "from_currency", "type": "string", "description": "Source currency ISO code"},
+          {"name": "to_currency", "type": "string", "description": "Target currency ISO code"}
+        ],
+        "optional_parameters": [],
+        "template_response": "{\"original_amount\": 100, \"converted_amount\": 92.0, \"from\": \"USD\", \"to\": \"EUR\", \"rate\": 0.92}"
+      }
+    ]
+  },
+  {
+    "tool_name": "stock_market",
+    "tool_description": "Real-time stock quotes, historical prices, and company financials",
+    "category": "Finance",
+    "api_list": [
+      {
+        "name": "get_stock_quote",
+        "description": "Get current stock price and trading information for a ticker symbol",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "symbol", "type": "string", "description": "Stock ticker symbol e.g. AAPL"}
+        ],
+        "optional_parameters": [],
+        "template_response": "{\"symbol\": \"AAPL\", \"price\": 185.50, \"change\": 2.30, \"change_pct\": 1.26, \"volume\": 52000000, \"market_cap\": \"2.9T\"}"
+      },
+      {
+        "name": "get_historical_prices",
+        "description": "Get historical OHLCV price data for a stock",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "symbol", "type": "string", "description": "Stock ticker symbol"},
+          {"name": "from_date", "type": "string", "description": "Start date YYYY-MM-DD"},
+          {"name": "to_date", "type": "string", "description": "End date YYYY-MM-DD"}
+        ],
+        "optional_parameters": [
+          {"name": "interval", "type": "string", "description": "daily, weekly, or monthly", "default": "daily"}
+        ],
+        "template_response": "{\"symbol\": \"AAPL\", \"prices\": [{\"date\": \"2024-01-02\", \"open\": 182.0, \"high\": 186.0, \"low\": 181.5, \"close\": 185.2, \"volume\": 48000000}]}"
+      },
+      {
+        "name": "get_company_financials",
+        "description": "Get company financial statements including revenue and earnings",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "symbol", "type": "string", "description": "Stock ticker symbol"}
+        ],
+        "optional_parameters": [
+          {"name": "period", "type": "string", "description": "annual or quarterly", "default": "annual"}
+        ],
+        "template_response": "{\"symbol\": \"AAPL\", \"revenue\": 394000000000, \"net_income\": 97000000000, \"eps\": 6.13, \"pe_ratio\": 30.2, \"dividend_yield\": 0.005}"
+      }
+    ]
+  },
+  {
+    "tool_name": "news_api",
+    "tool_description": "Search news articles and get top headlines from global sources",
+    "category": "News",
+    "api_list": [
+      {
+        "name": "search_news",
+        "description": "Search for news articles by keyword, topic, or entity",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "query", "type": "string", "description": "Search query or keyword"}
+        ],
+        "optional_parameters": [
+          {"name": "category", "type": "string", "description": "business, tech, sports, health, science"},
+          {"name": "from_date", "type": "string", "description": "Start date YYYY-MM-DD"},
+          {"name": "language", "type": "string", "description": "ISO language code", "default": "en"},
+          {"name": "limit", "type": "integer", "description": "Maximum results to return", "default": 10}
+        ],
+        "template_response": "{\"total\": 42, \"articles\": [{\"article_id\": \"N001\", \"title\": \"Article Title\", \"source\": \"Reuters\", \"published_at\": \"2024-06-01\", \"url\": \"https://reuters.com/article\", \"summary\": \"Brief summary here\"}]}"
+      },
+      {
+        "name": "get_top_headlines",
+        "description": "Get current top headlines by category or country",
+        "method": "GET",
+        "required_parameters": [],
+        "optional_parameters": [
+          {"name": "category", "type": "string", "description": "News category filter"},
+          {"name": "country", "type": "string", "description": "ISO country code", "default": "us"},
+          {"name": "limit", "type": "integer", "description": "Number of headlines", "default": 10}
+        ],
+        "template_response": "{\"headlines\": [{\"article_id\": \"N002\", \"title\": \"Breaking News Title\", \"source\": \"AP News\", \"published_at\": \"2024-06-01T10:00:00Z\"}]}"
+      },
+      {
+        "name": "get_article_details",
+        "description": "Get the full content and metadata for a specific news article",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "article_id", "type": "string", "description": "Article identifier from search or headlines"}
+        ],
+        "optional_parameters": [],
+        "template_response": "{\"article_id\": \"N001\", \"title\": \"Full Article Title\", \"content\": \"Full article text here...\", \"author\": \"John Smith\", \"tags\": [\"technology\", \"AI\"]}"
+      }
+    ]
+  },
+  {
+    "tool_name": "ecommerce_search",
+    "tool_description": "Search products, compare prices, and read customer reviews",
+    "category": "Shopping",
+    "api_list": [
+      {
+        "name": "search_products",
+        "description": "Search for products by keyword or category with filtering options",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "query", "type": "string", "description": "Product search query or name"}
+        ],
+        "optional_parameters": [
+          {"name": "category", "type": "string", "description": "Product category filter"},
+          {"name": "min_price", "type": "number", "description": "Minimum price in USD"},
+          {"name": "max_price", "type": "number", "description": "Maximum price in USD"},
+          {"name": "min_rating", "type": "number", "description": "Minimum customer rating 1-5"}
+        ],
+        "template_response": "{\"total\": 156, \"products\": [{\"product_id\": \"P001\", \"name\": \"Product Name\", \"price\": 49.99, \"rating\": 4.3, \"review_count\": 1250, \"seller\": \"TechStore\"}]}"
+      },
+      {
+        "name": "get_product_details",
+        "description": "Get full product specifications, images, and availability",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "product_id", "type": "string", "description": "Product identifier from search results"}
+        ],
+        "optional_parameters": [],
+        "template_response": "{\"product_id\": \"P001\", \"name\": \"Product Name\", \"description\": \"Full description\", \"specs\": {\"weight\": \"1.2kg\", \"dimensions\": \"30x20x10cm\"}, \"in_stock\": true, \"stock_count\": 45}"
+      },
+      {
+        "name": "get_product_reviews",
+        "description": "Get customer reviews for a specific product",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "product_id", "type": "string", "description": "Product identifier"}
+        ],
+        "optional_parameters": [
+          {"name": "sort", "type": "string", "description": "recent, helpful, or critical", "default": "helpful"},
+          {"name": "limit", "type": "integer", "description": "Number of reviews", "default": 10}
+        ],
+        "template_response": "{\"product_id\": \"P001\", \"average_rating\": 4.3, \"total_reviews\": 1250, \"reviews\": [{\"rating\": 5, \"title\": \"Great product\", \"body\": \"Works perfectly\", \"verified\": true}]}"
+      },
+      {
+        "name": "add_to_cart",
+        "description": "Add a product to the shopping cart",
+        "method": "POST",
+        "required_parameters": [
+          {"name": "product_id", "type": "string", "description": "Product identifier to add"},
+          {"name": "quantity", "type": "integer", "description": "Number of items to add"}
+        ],
+        "optional_parameters": [],
+        "template_response": "{\"cart_id\": \"CART001\", \"product_id\": \"P001\", \"quantity\": 1, \"subtotal\": 49.99, \"total_items\": 1}"
+      }
+    ]
+  },
+  {
+    "tool_name": "calendar_events",
+    "tool_description": "Manage calendar events, check availability, and schedule meetings",
+    "category": "Productivity",
+    "api_list": [
+      {
+        "name": "check_availability",
+        "description": "Check free and busy time slots for a given date",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "date", "type": "string", "description": "Date to check availability YYYY-MM-DD"}
+        ],
+        "optional_parameters": [
+          {"name": "timezone", "type": "string", "description": "Timezone string e.g. America/New_York", "default": "UTC"}
+        ],
+        "template_response": "{\"date\": \"2024-06-15\", \"free_slots\": [{\"start\": \"09:00\", \"end\": \"10:30\"}, {\"start\": \"14:00\", \"end\": \"17:00\"}], \"busy_slots\": [{\"start\": \"10:30\", \"end\": \"12:00\", \"title\": \"Team Meeting\"}]}"
+      },
+      {
+        "name": "create_event",
+        "description": "Create a new calendar event with optional attendees and location",
+        "method": "POST",
+        "required_parameters": [
+          {"name": "title", "type": "string", "description": "Event title or name"},
+          {"name": "start_datetime", "type": "string", "description": "Start datetime in ISO 8601 format"},
+          {"name": "end_datetime", "type": "string", "description": "End datetime in ISO 8601 format"}
+        ],
+        "optional_parameters": [
+          {"name": "description", "type": "string", "description": "Event description or agenda"},
+          {"name": "location", "type": "string", "description": "Physical or virtual meeting location"},
+          {"name": "attendees", "type": "array", "description": "List of attendee email addresses"}
+        ],
+        "template_response": "{\"event_id\": \"EVT001\", \"title\": \"Meeting\", \"status\": \"confirmed\", \"calendar_link\": \"https://cal.example.com/event/EVT001\", \"meeting_link\": \"https://meet.example.com/abc123\"}"
+      },
+      {
+        "name": "get_event_details",
+        "description": "Get full details for a specific calendar event",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "event_id", "type": "string", "description": "Event identifier"}
+        ],
+        "optional_parameters": [],
+        "template_response": "{\"event_id\": \"EVT001\", \"title\": \"Team Sync\", \"attendees\": [\"alice@example.com\"], \"location\": \"Conference Room A\", \"status\": \"confirmed\"}"
+      }
+    ]
+  },
+  {
+    "tool_name": "translation_service",
+    "tool_description": "Detect language and translate text between over 100 languages",
+    "category": "Language",
+    "api_list": [
+      {
+        "name": "detect_language",
+        "description": "Detect the language of a given text",
+        "method": "POST",
+        "required_parameters": [
+          {"name": "text", "type": "string", "description": "Text to analyze for language detection"}
+        ],
+        "optional_parameters": [],
+        "template_response": "{\"language\": \"fr\", \"language_name\": \"French\", \"confidence\": 0.99}"
+      },
+      {
+        "name": "translate_text",
+        "description": "Translate text from one language to another",
+        "method": "POST",
+        "required_parameters": [
+          {"name": "text", "type": "string", "description": "Text to translate"},
+          {"name": "target_language", "type": "string", "description": "Target language ISO code e.g. en, fr, de"}
+        ],
+        "optional_parameters": [
+          {"name": "source_language", "type": "string", "description": "Source language code (auto-detected if omitted)"}
+        ],
+        "template_response": "{\"original_text\": \"Bonjour\", \"translated_text\": \"Hello\", \"source_language\": \"fr\", \"target_language\": \"en\"}"
+      }
+    ]
+  },
+  {
+    "tool_name": "restaurant_finder",
+    "tool_description": "Find restaurants, check menus, and make dining reservations",
+    "category": "Food",
+    "api_list": [
+      {
+        "name": "search_restaurants",
+        "description": "Search for restaurants by location, cuisine, and preferences",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "location", "type": "string", "description": "City or neighborhood for restaurant search"}
+        ],
+        "optional_parameters": [
+          {"name": "cuisine", "type": "string", "description": "Cuisine type e.g. Italian, Japanese, Mexican"},
+          {"name": "min_rating", "type": "number", "description": "Minimum rating 1-5"},
+          {"name": "price_range", "type": "string", "description": "Budget level: cheap, moderate, expensive"},
+          {"name": "open_now", "type": "boolean", "description": "Only show currently open restaurants"}
+        ],
+        "template_response": "{\"restaurants\": [{\"restaurant_id\": \"R001\", \"name\": \"La Maison\", \"cuisine\": \"French\", \"rating\": 4.6, \"price_range\": \"expensive\", \"address\": \"15 Rue de la Paix\"}]}"
+      },
+      {
+        "name": "get_restaurant_menu",
+        "description": "Get the full menu for a specific restaurant",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "restaurant_id", "type": "string", "description": "Restaurant identifier"}
+        ],
+        "optional_parameters": [],
+        "template_response": "{\"restaurant_id\": \"R001\", \"menu\": [{\"section\": \"Starters\", \"items\": [{\"name\": \"Escargot\", \"price\": 18.00, \"description\": \"Classic French snails\"}]}]}"
+      },
+      {
+        "name": "make_reservation",
+        "description": "Make a dining reservation at a restaurant",
+        "method": "POST",
+        "required_parameters": [
+          {"name": "restaurant_id", "type": "string", "description": "Restaurant identifier"},
+          {"name": "date", "type": "string", "description": "Reservation date YYYY-MM-DD"},
+          {"name": "time", "type": "string", "description": "Reservation time HH:MM"},
+          {"name": "party_size", "type": "integer", "description": "Number of diners"},
+          {"name": "guest_name", "type": "string", "description": "Name for the reservation"}
+        ],
+        "optional_parameters": [
+          {"name": "special_requests", "type": "string", "description": "Dietary restrictions or special occasions"}
+        ],
+        "template_response": "{\"reservation_id\": \"DIN001\", \"confirmation\": \"REST123\", \"status\": \"confirmed\", \"restaurant\": \"La Maison\", \"date\": \"2024-06-15\", \"time\": \"19:30\"}"
+      }
+    ]
+  },
+  {
+    "tool_name": "job_search",
+    "tool_description": "Search job listings, get company information, and check salary data",
+    "category": "Career",
+    "api_list": [
+      {
+        "name": "search_jobs",
+        "description": "Search for job listings by title, location, and requirements",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "query", "type": "string", "description": "Job title, skill, or keyword to search"}
+        ],
+        "optional_parameters": [
+          {"name": "location", "type": "string", "description": "City or region for job location"},
+          {"name": "job_type", "type": "string", "description": "full-time, part-time, contract, remote"},
+          {"name": "salary_min", "type": "integer", "description": "Minimum annual salary in USD"},
+          {"name": "experience_level", "type": "string", "description": "entry, mid, senior, executive"}
+        ],
+        "template_response": "{\"total\": 234, \"jobs\": [{\"job_id\": \"J001\", \"title\": \"Software Engineer\", \"company\": \"TechCorp\", \"location\": \"San Francisco, CA\", \"salary_range\": \"120k-160k\", \"posted_date\": \"2024-05-28\"}]}"
+      },
+      {
+        "name": "get_job_details",
+        "description": "Get full job description and requirements for a specific listing",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "job_id", "type": "string", "description": "Job listing identifier"}
+        ],
+        "optional_parameters": [],
+        "template_response": "{\"job_id\": \"J001\", \"title\": \"Software Engineer\", \"description\": \"Full job description...\", \"requirements\": [\"Python\", \"5+ years experience\"], \"benefits\": [\"health insurance\", \"401k\", \"remote work\"]}"
+      },
+      {
+        "name": "get_salary_data",
+        "description": "Get salary benchmarks and compensation data for a role",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "job_title", "type": "string", "description": "Job title to get salary data for"},
+          {"name": "location", "type": "string", "description": "City or region for salary comparison"}
+        ],
+        "optional_parameters": [
+          {"name": "experience_level", "type": "string", "description": "entry, mid, senior"}
+        ],
+        "template_response": "{\"job_title\": \"Software Engineer\", \"location\": \"San Francisco\", \"median_salary\": 145000, \"range\": {\"p25\": 120000, \"p75\": 175000}, \"total_compensation\": 200000}"
+      }
+    ]
+  },
+  {
+    "tool_name": "recipe_finder",
+    "tool_description": "Search recipes, get cooking instructions, and find ingredient substitutions",
+    "category": "Food",
+    "api_list": [
+      {
+        "name": "search_recipes",
+        "description": "Search for recipes by name, ingredients, or dietary restrictions",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "query", "type": "string", "description": "Recipe name, dish, or main ingredient"}
+        ],
+        "optional_parameters": [
+          {"name": "diet", "type": "string", "description": "vegetarian, vegan, gluten-free, keto"},
+          {"name": "cuisine", "type": "string", "description": "Italian, Chinese, Mexican, etc."},
+          {"name": "max_time", "type": "integer", "description": "Maximum cooking time in minutes"},
+          {"name": "max_calories", "type": "integer", "description": "Maximum calories per serving"}
+        ],
+        "template_response": "{\"recipes\": [{\"recipe_id\": \"RC001\", \"name\": \"Spaghetti Carbonara\", \"calories\": 450, \"prep_time\": 20, \"cook_time\": 15, \"rating\": 4.8}]}"
+      },
+      {
+        "name": "get_recipe_details",
+        "description": "Get full recipe with ingredients list and step-by-step instructions",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "recipe_id", "type": "string", "description": "Recipe identifier from search results"}
+        ],
+        "optional_parameters": [
+          {"name": "servings", "type": "integer", "description": "Adjust ingredients for number of servings", "default": 4}
+        ],
+        "template_response": "{\"recipe_id\": \"RC001\", \"name\": \"Spaghetti Carbonara\", \"ingredients\": [{\"item\": \"spaghetti\", \"amount\": \"400g\"}], \"instructions\": [\"Boil pasta\", \"Fry pancetta\"], \"nutrition\": {\"calories\": 450, \"protein\": 22}}"
+      }
+    ]
+  },
+  {
+    "tool_name": "event_ticketing",
+    "tool_description": "Search events, check ticket availability, and purchase tickets",
+    "category": "Entertainment",
+    "api_list": [
+      {
+        "name": "search_events",
+        "description": "Search for upcoming events by keyword, location, and date range",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "query", "type": "string", "description": "Event name, artist, or keyword"},
+          {"name": "location", "type": "string", "description": "City for event search"}
+        ],
+        "optional_parameters": [
+          {"name": "category", "type": "string", "description": "music, sports, theater, comedy, festival"},
+          {"name": "start_date", "type": "string", "description": "Earliest event date YYYY-MM-DD"},
+          {"name": "end_date", "type": "string", "description": "Latest event date YYYY-MM-DD"}
+        ],
+        "template_response": "{\"events\": [{\"event_id\": \"E001\", \"name\": \"Taylor Swift Concert\", \"venue\": \"Madison Square Garden\", \"date\": \"2024-07-15\", \"category\": \"music\", \"min_price\": 85.00}]}"
+      },
+      {
+        "name": "get_event_tickets",
+        "description": "Get ticket availability and pricing for a specific event",
+        "method": "GET",
+        "required_parameters": [
+          {"name": "event_id", "type": "string", "description": "Event identifier from search results"}
+        ],
+        "optional_parameters": [
+          {"name": "quantity", "type": "integer", "description": "Number of tickets needed", "default": 1}
+        ],
+        "template_response": "{\"event_id\": \"E001\", \"available\": true, \"ticket_types\": [{\"type\": \"general\", \"price\": 85.00, \"available_count\": 234}, {\"type\": \"vip\", \"price\": 250.00, \"available_count\": 12}]}"
+      },
+      {
+        "name": "purchase_tickets",
+        "description": "Purchase tickets for an event",
+        "method": "POST",
+        "required_parameters": [
+          {"name": "event_id", "type": "string", "description": "Event identifier to purchase tickets for"},
+          {"name": "ticket_type", "type": "string", "description": "Type of ticket to purchase"},
+          {"name": "quantity", "type": "integer", "description": "Number of tickets"},
+          {"name": "buyer_email", "type": "string", "description": "Buyer email for ticket delivery"}
+        ],
+        "optional_parameters": [],
+        "template_response": "{\"order_id\": \"ORD001\", \"event\": \"Taylor Swift Concert\", \"tickets\": 2, \"total_price\": 170.00, \"confirmation\": \"TKT789\", \"status\": \"confirmed\"}"
+      }
+    ]
+  },
+  {
+    "tool_name": "messaging_service",
+    "tool_description": "Send messages, notifications, and manage communication threads",
+    "category": "Communication",
+    "api_list": [
+      {
+        "name": "send_message",
+        "description": "Send a message or notification to a recipient",
+        "method": "POST",
+        "required_parameters": [
+          {"name": "recipient", "type": "string", "description": "Recipient email or phone number"},
+          {"name": "message", "type": "string", "description": "Message content to send"}
+        ],
+        "optional_parameters": [
+          {"name": "subject", "type": "string", "description": "Message subject for email"},
+          {"name": "channel", "type": "string", "description": "email, sms, or push", "default": "email"}
+        ],
+        "template_response": "{\"message_id\": \"MSG001\", \"status\": \"sent\", \"delivered_at\": \"2024-06-01T14:30:00Z\", \"recipient\": \"user@example.com\"}"
+      },
+      {
+        "name": "get_inbox",
+        "description": "Retrieve recent messages from inbox",
+        "method": "GET",
+        "required_parameters": [],
+        "optional_parameters": [
+          {"name": "limit", "type": "integer", "description": "Number of messages to retrieve", "default": 20},
+          {"name": "unread_only", "type": "boolean", "description": "Only return unread messages", "default": false}
+        ],
+        "template_response": "{\"messages\": [{\"message_id\": \"MSG002\", \"from\": \"sender@example.com\", \"subject\": \"Meeting tomorrow\", \"preview\": \"Just confirming...\", \"received_at\": \"2024-06-01T09:00:00Z\", \"read\": false}]}"
+      }
+    ]
+  },
+  {
+    "tool_name": "user_profile",
+    "tool_description": "Manage user profiles, preferences, and account settings",
+    "category": "Account",
+    "api_list": [
+      {
+        "name": "get_user_profile",
+        "description": "Retrieve the current user profile and preferences",
+        "method": "GET",
+        "required_parameters": [],
+        "optional_parameters": [
+          {"name": "include_preferences", "type": "boolean", "description": "Include user preference settings", "default": true}
+        ],
+        "template_response": "{\"user_id\": \"U001\", \"name\": \"Jane Smith\", \"email\": \"jane@example.com\", \"preferences\": {\"language\": \"en\", \"currency\": \"USD\", \"timezone\": \"America/New_York\"}}"
+      },
+      {
+        "name": "update_preferences",
+        "description": "Update user preferences and account settings",
+        "method": "POST",
+        "required_parameters": [
+          {"name": "preferences", "type": "object", "description": "Key-value pairs of preferences to update"}
+        ],
+        "optional_parameters": [],
+        "template_response": "{\"user_id\": \"U001\", \"status\": \"updated\", \"updated_fields\": [\"language\", \"currency\"]}"
+      }
+    ]
+  }
+]
