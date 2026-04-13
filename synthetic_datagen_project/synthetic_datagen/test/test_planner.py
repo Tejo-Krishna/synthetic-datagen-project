@@ -11,10 +11,10 @@ from pathlib import Path
 
 import pytest
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from planner.models import (
+from synthetic_datagen.planner.models import (
     SampledStep,
     SampledToolChain,
     RegistryParameterMetadata,
@@ -32,19 +32,19 @@ from planner.models import (
     RESAMPLE_ON,
     HARD_STOP_ON,
 )
-from planner.validator import (
+from synthetic_datagen.planner.validator import (
     validate_sampled_tool_chain,
     validate_conversation_plan,
     raise_if_invalid,
 )
-from planner.scaffold import (
+from synthetic_datagen.planner.scaffold import (
     build_step_scaffold,
     detect_clarification_candidates,
     build_clarification_points,
     derive_novelty_hints,
 )
-from planner.narrative import parse_narrative_response, build_summary_seed_fields
-from planner.agent import PlannerAgent, PlannerConfig
+from synthetic_datagen.planner.narrative import parse_narrative_response, build_summary_seed_fields
+from synthetic_datagen.planner.agent import PlannerAgent, PlannerConfig
 
 
 # ---------------------------------------------------------------------------

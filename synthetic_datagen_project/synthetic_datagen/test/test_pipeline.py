@@ -1843,7 +1843,7 @@ if __name__ == "__main__":
         test_sampler_determinism_same_seed,
         test_sampler_chains_determinism,
         test_sampler_unique_chains,
-        test_sampler_min_chain_length,
+        test_sampler_chain_length_constraints,
         test_sampler_min_distinct_tools,
         test_clarification_detection_missing_params,
         test_clarification_step_index_valid,
