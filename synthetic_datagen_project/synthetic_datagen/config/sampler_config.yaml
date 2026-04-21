@@ -1,0 +1,112 @@
+# config/sampler_config.yaml
+# Owned by: sampler/config.py
+#
+# Controls all sampler behavior: chain length, diversity constraints,
+# clarification policy, supported modes, and graph walk parameters.
+
+# Chain length bounds — enforced on every sampled chain
+min_chain_length: 3
+max_chain_length: 5
+
+# Minimum distinct tools per chain — ensures multi-tool traces
+# in a substantial portion of the dataset (100% by default)
+min_distinct_tools: 2
+
+# Maximum distinct tool categories per chain — rejects incoherent chains
+# that span too many unrelated domains (e.g. flight + recipe + calendar).
+# 3 allows adjacent domains (e.g. travel + weather + maps) while preventing
+# chains that span 4-5 unrelated categories.
+max_distinct_categories: 3
+
+# Retry budget — max attempts to find a valid unique chain before
+# raising SamplerExhaustedError
+max_retries: 200
+
+# Uniqueness enforcement — sample_chains(n) returns unique chains by default
+# Uniqueness key: (tuple(endpoint_ids), pattern_type, tuple(clarification_step_indices))
+unique_chains: true
+
+# Enable clarification-first chains by default.
+# When true, the sampler is ALLOWED to generate chains that start with
+# a missing-required-param clarification step.
+# This is an enabling flag, not a forcing function —
+# sequential/multi_tool modes still dominate naturally.
+allow_clarification_first: true
+
+# Cross-tool bias applied MULTIPLICATIVELY when a transition crosses tool boundaries:
+#   effective_weight = edge.weight * (1 + cross_tool_bias)
+# This preserves relative edge strength ordering while biasing toward multi-tool chains.
+cross_tool_bias: 0.3
+
+# Supported sampling modes — all four must be implemented
+supported_modes:
+  - sequential
+  - multi_tool
+  - clarification_first
+  - parallel
+
+# Short chain support — enables 1–2 tool call conversations for variety.
+# This produces some shorter conversations that are still valid and
+# intentionally distinct from the standard 3+ step chains.
+short_chain_max_length: 2
+short_chain_weight: 0.10
+
+# Parameters that are considered naturally user-providable at chain start.
+# An endpoint whose required params are all in this list is a valid start node
+# in default mode (no graph context needed to fill them — the user provides them).
+user_natural_params:
+  # Basic search/navigation params
+  - query
+  - city
+  - date
+  - location
+  - origin
+  - destination
+  - source
+  - target
+  - language
+  - country
+  - keyword
+  - term
+  - text
+  - name
+  - category
+  - type
+  - from_date
+  - to_date
+  - start_date
+  - end_date
+  # Date/time params users specify directly
+  - check_in
+  - check_out
+  - departure_date
+  - return_date
+  - start_datetime
+  - end_datetime
+  - time
+  - datetime
+  # Identity/contact params users provide
+  - guest_name
+  - passenger_name
+  - buyer_email
+  - passenger_email
+  - email
+  - address
+  - recipient
+  - sender
+  # Financial params users specify
+  - from_currency
+  - to_currency
+  - amount
+  - currency
+  - budget
+  # Quantity/preference params
+  - quantity
+  - party_size
+  - passengers
+  - preferences
+  - job_title
+  - topic
+  - subject
+  - message
+  - symbol
