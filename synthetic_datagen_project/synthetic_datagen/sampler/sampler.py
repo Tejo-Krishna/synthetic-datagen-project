@@ -140,6 +140,45 @@ def _chain_key(chain: SampledChain) -> tuple:
 
 
 # ---------------------------------------------------------------------------
+# Intent-priority ordering
+# ---------------------------------------------------------------------------
+
+# Maps intent name → sort key (lower = earlier in the chain).
+# Lookup/read operations come before write/action operations so the sampler
+# never produces chains like book_flight → get_flight_details.
+_INTENT_ORDER: dict[str, int] = {
+    "search":    0,
+    "retrieve":  1,
+    "compare":   2,
+    "summarize": 3,
+    "execute":   4,
+    "update":    5,
+    "create":    6,
+    "delete":    7,
+    "unknown":   8,
+}
+
+
+def _sort_endpoints_by_intent(
+    endpoint_ids: list[str],
+    registry: ToolRegistry,
+) -> list[str]:
+    """
+    Stable-sort endpoint_ids so lookup/read intents precede write/action intents.
+
+    Uses a stable sort, so endpoints with the same intent keep their original
+    relative order (graph-walk order is preserved within each intent group).
+    Parallel branch lists are NOT passed here — only the flat linear sequence.
+    """
+    def _sort_key(eid: str) -> int:
+        ep = registry.get_endpoint(eid)
+        intent = ep.intent if ep else "unknown"
+        return _INTENT_ORDER.get(intent, 8)
+
+    return sorted(endpoint_ids, key=_sort_key)
+
+
+# ---------------------------------------------------------------------------
 # WalkResult -> SampledChain assembly
 # ---------------------------------------------------------------------------
 
@@ -150,22 +189,27 @@ def _assemble_chain(
 ) -> SampledChain:
     """Convert a WalkResult into a fully assembled SampledChain."""
 
+    # Reorder linear steps so lookup/read intents always precede write/action
+    # intents. Parallel branches keep their internal order unchanged.
+    ordered_ids = _sort_endpoints_by_intent(walk.endpoint_ids, registry)
+
     # Detect clarification steps from all endpoints in the flattened view
     clarification_steps = _detect_clarification_steps(
-        endpoint_ids=walk.endpoint_ids,
+        endpoint_ids=ordered_ids,
         transitions=walk.transitions,
         registry=registry,
         user_natural_params=config.user_natural_params,
     )
 
     # Deduplicated ordered tool list
-    tool_ids = list(dict.fromkeys(eid.split("::")[0] for eid in walk.endpoint_ids))
+    tool_ids = list(dict.fromkeys(eid.split("::")[0] for eid in ordered_ids))
 
-    # Classify pattern
-    pattern_type = _classify_pattern(walk, registry, config)
+    # Classify pattern using the reordered endpoint list
+    ordered_walk = replace(walk, endpoint_ids=ordered_ids)
+    pattern_type = _classify_pattern(ordered_walk, registry, config)
 
     return SampledChain(
-        endpoint_ids=walk.endpoint_ids,
+        endpoint_ids=ordered_ids,
         tool_ids=tool_ids,
         transitions=walk.transitions,
         pattern_type=pattern_type,
